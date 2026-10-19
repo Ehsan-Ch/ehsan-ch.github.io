@@ -1,0 +1,5 @@
+seq,id,time,status,note
+1,DK1-20261002,2026-09-30T00:00:00+00:00,PROPOSED,Hypothetical shaped weekly contract
+2,DK1-20261002,2026-09-30T00:00:00+00:00,APPROVED,Coverage and expected-cost checks passed
+3,DK1-20261002,2026-09-30T00:00:00+00:00,OPEN,Assumed paper agreement; no real quote or execution
+4,DK1-20261002,2026-10-09T00:00:00+00:00,SETTLED,Net paper benefit EUR 6045.667895

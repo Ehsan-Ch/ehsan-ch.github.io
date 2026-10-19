@@ -1,0 +1,223 @@
+# Danish Power Portfolio Stress Lab
+
+**How should a limited hedge budget be split between DK1 and DK2?** This project connects joint historical power-price scenarios, expected-shortfall allocation and an auditable SQLite paper book.
+
+It preserves real hourly price patterns across the two zones, searches feasible hedge combinations, exposes the cost of protection when prices fall, and checks historical risk estimates against later weeks.
+
+**Research findings are reported honestly:** the nominal 95% weekly cost threshold covers only **84.2% of 38 later delivery weeks**. Historical scenarios underestimate tail risk in this sample. Hedge improvements are based on assumed fixed prices and must not be treated as executable returns.
+
+## Explore
+
+Download or clone the repository and open [reports/benchmark/report.html](reports/benchmark/report.html) locally. GitHub shows the HTML source rather than running the report.
+
+The self-contained dashboard includes:
+
+- Two demand mixes, each consuming 42 MWh/day with explicit hourly profiles.
+- A daily expected-cost budget control from €0 to €300.
+- All 81 allocations, their feasibility and their historical tail cost.
+- A sorted weekly cost comparison and additive zone contributions.
+- Five deterministic stress cases, including falling and negative prices.
+- A 38-week rolling check of the unhedged risk estimate.
+- Paper-book snapshots at agreement and after delivery, reconstructed from events.
+
+The report works offline and uses no external scripts, fonts, trackers or API keys.
+
+## Reproduce
+
+Python 3.11+ and NumPy are required.
+
+~~~bash
+python -m venv .venv
+# Activate the environment using the normal command for your platform.
+python -m pip install -e .
+python -m unittest discover -s tests -v
+python -m powerstress.cli download --data data
+python -m powerstress.cli run --data data --out reports/my-run
+python -m http.server 8769 --bind 127.0.0.1 --directory reports/my-run
+~~~
+
+Open http://127.0.0.1:8769/report.html, or open the HTML file directly.
+
+The CLI intentionally uses fixed benchmark dates. A fresh output folder is required when a paper-book database already exists; the program will not overwrite the earlier ledger. Raw API caches and binary SQLite files are excluded from Git. A new run rebuilds the database; published CSVs contain all orders and events.
+
+## Source and data integrity
+
+Official sources:
+
+- [Energinet Day-Ahead Prices](https://www.energidataservice.dk/tso-electricity/DayAheadPrices)
+- [Dataset metadata](https://api.energidataservice.dk/meta/dataset/DayAheadPrices)
+- [API guide](https://www.energidataservice.dk/guides/api-guides)
+
+The download covers **1 October 2025 inclusive to 10 October 2026 exclusive in Danish local time**. It contains **71,808 quarter-hour observations** and **8,976 complete hours per zone**. There are no missing or invalid intervals in the included benchmark.
+
+Four equal quarter-hour EUR/MWh prices are averaged into an hourly reference. Load is assumed constant within each hour. Negative prices are retained. Duplicates and misaligned observations raise errors. Incomplete hours and incomplete joint DK1/DK2 UTC days are excluded, not filled. The risk window requires 90 consecutive complete days.
+
+[metrics.json](reports/benchmark/metrics.json) records the exact request URL, retrieval time, raw-response SHA-256, source metadata, quality counts and numerical results. Cached bytes are checked against their manifest hash before processing. Reruns can differ if the source revises prices; the API is not a point-in-time publication archive.
+
+## Scenario design and timing
+
+The main snapshot simulates a decision on **30 September 2026 at 00:00 UTC** for delivery **2–8 October 2026**.
+
+| Item | Definition |
+|---|---|
+| Information window | 1 July–28 September, 90 full UTC days |
+| Availability buffer | Last included hour ends 24 hours before the decision |
+| Delivery lead | 48 hours from decision to start of delivery |
+| Scenario horizon | Seven complete UTC days |
+| Joint scenarios | Every contiguous seven-day block: 90 − 7 + 1 = 84 |
+| Scenario weighting | Equal probability for each block start |
+
+Each block retains its original order of hours and days and its simultaneous DK1/DK2 prices. The model does not shuffle zones independently, generate artificial precision with thousands of repeated samples, or use logarithmic returns on potentially negative prices.
+
+The 84 blocks overlap and are dependent. They are not independent forecasts or 84 independent tail observations. Equal block weights mean dates in the interior appear more often than dates near the boundaries. No weekday alignment, seasonal matching, volatility scaling or regime model is applied. The method assumes recent levels are informative about the next week's range, which the rolling check shows can fail.
+
+This is a retrospective project built in October 2026. The simulated dates do not imply that these forecasts or contracts were issued in real time.
+
+## Demand and assumed contracts
+
+Two synthetic load mixes are available:
+
+| Mix | Average DK1 load | Average DK2 load | Total daily energy |
+|---|---:|---:|---:|
+| Default | 1 MW | 0.75 MW | 42 MWh |
+| DK1-heavy | 1.5 MW | 0.25 MW | 42 MWh |
+
+Hourly shapes are specified in [risk.py](powerstress/risk.py), normalized to the stated average loads, and repeat every day. The profiles are examples, not observed customer demand.
+
+Each hypothetical fixed-price contract follows exactly the hedged fraction of that zone's hourly demand shape. It is not an exchange baseload contract. For each zone:
+
+~~~text
+reference price = expected unhedged weekly cost / weekly energy
+assumed fixed price = reference price + zone markup
+DK1 markup = €8/MWh
+DK2 markup = €10/MWh
+
+weekly hedged cost =
+    (1 − hedge fraction) × weekly spot cost
+    + hedge fraction × weekly energy × fixed price
+~~~
+
+The expectation is over the 84 weighted historical scenarios. The default fixed prices are **€122.781813/MWh in DK1** and **€139.680224/MWh in DK2**. They are derived assumptions, not collected forward quotes. The markup is paid through the fixed contract price, not as an option premium.
+
+Actual contract availability, bid/ask spread, market impact, collateral, financing, consumption deviations, transaction fees, taxes and counterparty failure are outside the model.
+
+## Tail cost and allocation
+
+All risk values are **total weekly procurement costs in euros**, not trading returns, P&L losses or margin requirements.
+
+The 95th-percentile cost uses the inverse empirical CDF. The expected-shortfall cost is the mean of the upper 5% probability mass. For 84 scenarios this is 4.2 scenarios: four complete worst observations plus a fractional boundary observation. If values tie at the boundary, remaining tail weight is distributed equally among the tied values.
+
+Zone contributions use the same portfolio-tail weights:
+
+~~~text
+portfolio expected shortfall = DK1 contribution + DK2 contribution
+~~~
+
+These contributions differ from computing each zone's expected shortfall separately. The difference between the sum of standalone tail costs and joint portfolio tail cost describes historical diversification; it happens to be **€0 in the default sample**, because the relevant worst weeks coincide.
+
+The allocator evaluates all 81 combinations of 0%, 10%, …, 80% coverage in each zone. It selects the minimum historical expected-shortfall cost subject to:
+
+- Maximum 80% hedge coverage per zone.
+- Expected weekly cost uplift no greater than seven times the daily budget.
+
+Ties favor lower expected cost, then lower total coverage, then lower DK1 coverage. A zero budget allows the unhedged allocation. The search is exact over this finite grid, not a claim of optimality over all possible contracts.
+
+**The expected-uplift budget is not a cash, collateral, premium-payment or maximum-loss limit.** A fixed-price hedge can have a large adverse settlement when spot prices fall.
+
+## Default allocation results
+
+Budget: **€160/day expected uplift**. The selected grid point is **80% DK1 / 0% DK2**, hedging 134.4 MWh in the week.
+
+The selection uses €153.60/day of the budget. The remaining €6.40 is insufficient for another 10-percentage-point step in DK2, which would cost €18/day at the assumed markup. This is a model result under the specified sample and contract assumptions, not a recommendation for a real portfolio.
+
+| Weekly cost measure | Unhedged | Selected hedge |
+|---|---:|---:|
+| Scenario mean | €35,623.05 | €36,698.25 |
+| 95th percentile | €50,839.70 | €45,019.90 |
+| Expected shortfall | €53,414.13 | €46,464.05 |
+| Maximum historical scenario | €55,582.71 | €47,636.97 |
+
+The **€6,950.08 expected-shortfall reduction is in-sample**: allocation and comparison use the same historical scenarios. It is not an out-of-sample risk-reduction estimate.
+
+Stress cases make the opposing outcomes explicit. A simultaneous €100/MWh rise lowers modeled cost by €12,339.81 with the default hedge relative to unhedged. A €150/MWh fall increases cost by **€21,260.19** relative to unhedged. These are deterministic scenario differences with no assigned probabilities.
+
+## Historical validation
+
+The rolling check issues a risk estimate every Monday for the following Wednesday–Tuesday delivery week. Each estimate uses the preceding 90 complete days with the same 24-hour availability buffer. The resulting 38 delivery weeks do not overlap; the training windows do overlap.
+
+| Measure | Result |
+|---|---:|
+| First issue | 5 January 2026 |
+| Last issue | 21 September 2026 |
+| Later delivery weeks | 38 |
+| Weeks above the estimated 95th percentile | 6 |
+| Observed threshold coverage | 84.2% |
+| Nominal coverage | 95% |
+
+This is meaningful evidence of undercoverage in the observed sample. It is not a formal statistical test, and there are too few weeks to estimate extreme-tail performance precisely. This check evaluates the **default unhedged load**, not the performance of the optimized hedge.
+
+## Paper book and later settlement
+
+The SQLite book records PROPOSED → APPROVED → OPEN → SETTLED events. Rejected proposals retain their reason. Checks cover:
+
+- Zone coverage and the shared expected-uplift budget.
+- Kill switch, duplicate exposure and chronological event order.
+- Valid seven-day periods, finite inputs, premature settlement and repeated settlement.
+- One delivery week per book, preventing overlapping periods from bypassing exposure checks.
+
+The book is a single-process research component. It is not a concurrent production order manager or a brokerage connection. Risk-policy settings and the kill switch are runtime configuration; the persisted database stores orders and event history.
+
+The saved default book contains **one DK1 contract** because the allocator selected no DK2 hedge. The report opens at the simulated agreement snapshot, where the position is OPEN. Switching to the post-delivery snapshot displays SETTLED and the net paper benefit. Scenario controls do not mutate this saved book.
+
+~~~text
+net hedge benefit =
+    hedge fraction × observed zone spot cost
+    − hedged MWh × fixed price
+
+hedged portfolio cost = unhedged portfolio cost − net hedge benefit
+~~~
+
+For the later **2–8 October 2026** delivery week:
+
+| Measure | Value |
+|---|---:|
+| Unhedged procurement cost | €50,635.50 |
+| Cost with the default paper hedge | €44,589.83 |
+| Net paper benefit | €6,045.67 |
+
+The contract assumptions and allocation do not use those later prices. Tests verify that altering future delivery prices changes settlement but not the scenario model or selected allocation. Nevertheless, a single later week and a hypothetical quote cannot establish repeatable or executable hedge performance.
+
+## Validation and files
+
+**31 local tests pass**, covering strict aggregation, source integrity, daylight-saving offsets, complete-day filtering, information cutoffs, joint-block preservation, fractional and tied expected shortfall, negative prices, budget feasibility, additive risk contributions, stress accounting, non-overlapping validation periods, future-data isolation, ledger controls and persistence.
+
+The dashboard controls were checked for a zero budget, full budget, alternative demand mix and settlement snapshot. Browser checks reported no JavaScript warnings or errors.
+
+GitHub Actions is configured for Python 3.11, 3.12 and 3.13. Configuration alone is not a passing CI result; account-level Actions restrictions may prevent jobs from starting.
+
+~~~text
+powerstress/
+  data.py          official price ingestion and cache integrity
+  risk.py          joint scenarios, tail costs and finite-grid allocation
+  book.py          SQLite paper positions and risk checks
+  pipeline.py      reproducible snapshot, rolling validation and settlement
+  report.py        offline interactive dashboard
+  cli.py           command-line entry points
+tests/
+  test_powerstress.py
+reports/benchmark/
+  report.html
+  metrics.json
+  allocations.csv
+  historical_blocks.csv
+  rolling.csv
+  orders.csv
+  events.csv
+~~~
+
+## Further research
+
+Useful extensions would include real forward quotes and contract shapes, customer demand uncertainty, regime-aware scenario weighting, collateral stress and a new untouched evaluation period. These need additional data and should be evaluated before claiming better risk coverage.
+
+Code is MIT-licensed. Energinet data remains subject to its source terms; the code license does not replace them.
+

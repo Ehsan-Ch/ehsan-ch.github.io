@@ -1,0 +1,92 @@
+# Hand Mirror
+
+**Human hand landmarks → constrained robot joints → an articulated 3D robotic hand.**
+
+A local computer-vision and robotics project that uses MediaPipe to estimate human finger movement and retargets it to a 15-DOF simulated hand. Includes webcam, image and video input, an offline synthetic demonstration, joint recording, and explicit tracking-loss behavior.
+
+![Hand Mirror synthetic demo](reports/demo.jpg)
+
+## Run locally
+
+Requirements: Python 3.10+ (standard library only), Node.js 20+, and a modern browser with WebGL. Internet is required for initial setup only.
+
+```bash
+git clone https://github.com/Ehsan-Ch/hand-motion-robot-mirror.git
+cd hand-motion-robot-mirror
+python scripts/setup.py
+node scripts/serve.mjs
+```
+
+Open **http://127.0.0.1:8780**. On Windows, `py` can be used instead of `python`. Use `PORT` to select another port. No npm installation, API key, cloud account, or training run is required.
+
+The setup script downloads pinned MediaPipe 0.10.32 and Three.js 0.180.0 packages, validates their SHA-512 integrity, extracts only required files, and downloads Google's versioned hand-landmarker model and example image. Download URLs and model/image SHA-256 values are recorded in `assets/download-manifest.json`. Vendor files and downloaded assets are excluded from Git.
+
+## Try it
+
+1. **Demo** animates a synthetic 21-point hand. Switch between finger wave, open hand, fist and pointing. This verifies retargeting without claiming real vision accuracy.
+2. **Sample photo** runs the actual detector on Google's example image. Select **Right** or **Left** under Tracked hand. The robot follows one selected hand, never averages two people/hands.
+3. **Open image / video** reads your file locally. Videos loop. Detection runs at most once per new decoded frame, capped at 20 Hz. Supported video codecs depend on your browser.
+4. **Start camera** requests camera permission only when clicked; audio is disabled. Use Demo to release the stream. Frame processing stays in the browser.
+5. Optionally show a flat open hand and choose **Calibrate open pose**. Reset if the offsets suppress intended movement. Switching source or selected hand resets calibration.
+6. **Record joints** captures the 15 simulated angles in radians and controller state. Stop recording, then **Export CSV**. Recording is capped at 18,000 animation frames. No images are stored.
+7. **Emergency stop** freezes simulated joint positions until **Resume**. This is a software demo control, not a hardware safety system.
+
+## Architecture
+
+```text
+camera / local video / image
+            │
+MediaPipe Hand Landmarker (21 world landmarks per hand)
+            │ selected left/right hand
+15 relative segment angles + optional open-pose offsets
+            │ joint clamps
+exponential smoothing + angular speed limiter + loss timeout
+            ├── CSV joint recording
+            └── Three.js hierarchical 15-joint hand
+```
+
+Each finger contributes three hinge angles. At a joint B between A and C:
+
+`bend = acos(clamp(dot(B−A, C−B) / (|B−A| |C−B|), −1, 1))`
+
+This is invariant to rigid rotation, translation, reflection and uniform scaling. World landmarks avoid the unequal x/y scaling of normalized image coordinates. The first hinge uses the wrist-to-finger-base direction as its reference. This is an approximation to MCP flexion, and mixes flexion with lateral splay. The thumb uses the same three-angle approach; it does not model anatomical opposition.
+
+### Controller defaults
+
+| Setting | Value |
+|---|---:|
+| Proximal / middle / distal limits | 75° / 100° / 80° |
+| Angular speed cap | 3.14 rad/s |
+| Smoothing time constant | 0.10 s |
+| Fresh tracking window | 0.25 s |
+| Hold current position | 0.25–0.75 s since last valid input |
+| Gradual return to open hand | after 0.75 s |
+| Maximum integration step | 0.10 s |
+
+Invalid, non-finite, or degenerate landmarks are rejected. A stop remains latched even if new detections arrive. Resume requires fresh input; otherwise the hand returns to neutral. Static photo mode intentionally reuses a fixed pose as a continuing command.
+
+## Tests and evaluation
+
+```bash
+node --test
+node scripts/evaluate.mjs
+```
+
+17 deterministic tests cover geometric invariance, known-angle recovery, calibration, malformed inputs, joint and velocity limits, tracking loss, emergency stop, time handling, CSV shape, and cancellation/serialization of detector mode changes. No network or detector model is needed for these tests.
+
+The committed [controller evaluation](reports/controller-evaluation.json) uses 1,200 synthetic frames at 60 Hz, including a two-second dropout. Tracking MAE was **4.18°**, speed stayed within **3.14 rad/s** (floating-point tolerance), and there were **zero joint-limit violations**. These measure the controller against its target angles, not real human-motion accuracy.
+
+See [VALIDATION.md](VALIDATION.md) for what was actually exercised in the browser and what remains untested. CI runs the dependency-free controller tests and evaluation on push and pull request; repository/account limitations can prevent GitHub runners from starting.
+
+## Scope and limitations
+
+- This is **kinematic simulation**: no physics, actuator torque, collision handling, grasp force, hardware communication, or physical robot validation.
+- It maps finger flexion only. It does not reproduce arm translation, wrist orientation, finger abduction, or full thumb opposition.
+- It uses a pretrained perception model and deterministic retargeting. It is not reinforcement learning, imitation-policy training, or a newly trained vision model.
+- Occlusion, blurred frames and unusual viewpoints can produce incorrect joint targets. Handedness classification can switch. The selected-hand filter reduces accidental mixing but is not persistent identity tracking.
+- MediaPipe inference is synchronous on the main thread. Slow inference reduces responsiveness; a worker-based detector would be the next performance improvement.
+- Real detector smoke testing is limited to one example photograph plus a moving-photo/blank video fixture. That video is an ingestion/dropout test, **not real finger-motion footage**. No population-level accuracy or hardware-safety claim is made.
+
+## Files
+
+`src/core.mjs` contains the testable geometry/controller; `src/app.mjs` manages inputs, detection and recording; `src/robot.mjs` builds the 3D hand; `scripts/` contains setup, local serving and evaluation. See [ATTRIBUTION.md](ATTRIBUTION.md) for third-party sources. Original code: MIT.

@@ -1,0 +1,63 @@
+# Aframax Monthly Forecasting
+
+A Python research implementation for monthly shipping-related time series with
+Keras Bidirectional LSTM models. The original private dataset is not included.
+
+## Implementation
+
+The script fits a 50-unit Bidirectional LSTM and a dense output for each target.
+Inputs have shape `(samples, timesteps, 1)`. The network sees only the historical
+input window; its bidirectional layer does not receive future observations.
+
+- Winsorisation bounds and scaling are fitted on the initial training window.
+- Held-out targets are scored in their original units, without clipping them.
+- Every remaining row is predicted in order, starting at `--train-end`.
+- Retraining occurs only after the target has been observed, preserving the
+  same target-specific training start throughout.
+- MAE and RMSE are reported alongside a last-observation baseline.
+
+This is sequential one-observation-ahead evaluation with expanding-window
+retraining. It is not a multi-month forecast issued from a single date.
+
+## Run
+
+Use Python 3.11 or 3.12 with a compatible TensorFlow installation:
+
+```bash
+python -m pip install -r requirements.txt
+python "Aframax Monthly.py" --data your_dataset.csv --output artifacts
+```
+
+The first CSV column must contain dates in `YYYYMMDD` format. Dates must be unique;
+the script sorts them chronologically. Target columns must contain finite numeric
+values. The default target identifiers are `47179`, `11118`, `77781` and `37997`.
+
+Options include `--targets`, `--train-end`, `--n-input`, `--epochs` and `--seed`.
+Defaults retain the original one-observation window, 362-row initial training
+boundary and 100 epochs. Target `47179` starts at row 129; other targets start at
+row zero. These are project-specific settings. An incompatible window raises
+an error. Full expanding-window retraining can be slow.
+
+Outputs are `predictions.csv` and `metrics.json` in `--output`; no Excel workbook
+is produced. The latter records errors, baseline errors, preprocessing bounds,
+training boundaries, seed and epochs. Use a fresh output directory for each run.
+
+## Verification and limitations
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Five tests cover tensor shape, alignment, future-data isolation, update ordering,
+constant-series scaling and invalid input. They use a recording model double,
+so no TensorFlow or private data is needed for these checks. **Native TensorFlow
+training and real-data forecast performance have not been reverified.**
+
+The 8 October 2026 code repair corrects the original input-shape and indexing
+issues, removes full-dataset preprocessing leakage, and replaces the misleading
+custom “accuracy” and “confidence” fields with forecast errors. It was made with
+OpenAI Codex assistance and does not establish new historical client results.
+
+Evaluate longer windows, additional chronological validation periods and stronger
+baselines before making comparative performance claims. Seed setting alone does
+not guarantee bitwise reproducibility across TensorFlow versions or hardware.

@@ -1,0 +1,19 @@
+:root{--bg:#101010}
+.theme-toggle{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:9px 12px;background:transparent;color:var(--ink);border:1px solid #666;border-radius:24px;font:12px Arial,Tahoma,sans-serif;cursor:pointer;flex-shrink:0}
+.theme-toggle>span:first-child{font-size:18px;line-height:1}.theme-toggle:hover{border-color:var(--accent);color:var(--accent)}.menu-toggle{margin-inline-start:0}.credit-theme{float:right;margin-bottom:20px}
+html[data-theme=light]{--bg:#f7f7f2;--ink:#171917;--muted:#545950;--line:#c9cdc4;--accent:#086648}
+[data-theme=light] .brand{color:var(--ink)}[data-theme=light] .brand-caption{color:#31382f}
+[data-theme=light] .languages{border-color:#a5ada2}[data-theme=light] .languages button{color:#51594d}[data-theme=light] .languages button[aria-pressed=true]{background:#202820;color:#fff}
+[data-theme=light] .menu-toggle{background:#202820}[data-theme=light] .menu-toggle span{background:#fff}
+[data-theme=light] .hero h1 em{color:transparent;-webkit-text-stroke-color:#262e25}
+[data-theme=light] .hero .intro,[data-theme=light] .detail .summary,[data-theme=light] .detail-grid p{color:#424b3e}
+[data-theme=light] .eyebrow,[data-theme=light] .hero .eyebrow,[data-theme=light] .hero-scroll,[data-theme=light] .hero-scroll>span:last-child,[data-theme=light] .overview,[data-theme=light] .section-head>p,[data-theme=light] .card-meta,[data-theme=light] .card-description,[data-theme=light] .project-card .card-description,[data-theme=light] .search>span,[data-theme=light] .result-count,[data-theme=light] .project-row p,[data-theme=light] .row-number,[data-theme=light] .row-category,[data-theme=light] .approach>div>p:last-child,[data-theme=light] .principles p,[data-theme=light] .contact-row p,[data-theme=light] footer,[data-theme=light] .detail .back,[data-theme=light] .source-note,[data-theme=light] .demo-status{color:#545e50}
+[data-theme=light] .project-card h3 a{color:#172017;text-shadow:0 2px 12px #f7f7f280}[data-theme=light] .project-card h3 a:hover{color:var(--accent)}[data-theme=light] .card-number{-webkit-text-stroke-color:#a6afa0}
+[data-theme=light] .project-circle{background:#91e6c4;color:#122a1e}[data-theme=light] .project-circle:hover{background:#c2f7df}
+[data-theme=light] .search input{color:#202820;border-color:#697862}[data-theme=light] .search input::placeholder{color:#5a6754}
+[data-theme=light] .filters button{color:#46523f;border-color:#a2ad9d}[data-theme=light] .filters button[aria-pressed=true]{color:#fff;background:#253522;border-color:#253522}
+[data-theme=light] .project-row:hover{background:#e9ede4}[data-theme=light] .project-row h3,[data-theme=light] .principles h3{color:#172017}
+[data-theme=light] .detail .tags span{color:#46523f;border-color:#9ba995}[data-theme=light] .button{background:#243b2b;color:#fff}[data-theme=light] .button:hover{background:#086648;color:#fff}
+[data-theme=light] .preview-note,[data-theme=light] .readme{background:#e9ede4;color:#34412e}[data-theme=light] .demo-controls button,[data-theme=light] .demo-controls select{background:#e5ebdf;color:#263520;border-color:#809177}
+[data-theme=light] .scroll-track{background:#c0c8b9}[data-theme=light] .scroll-track i{background:#536c47}
+@media(max-width:680px){.header{gap:7px;padding-inline:17px}.languages button{padding-inline:6px}.theme-toggle{min-height:39px;padding:7px;gap:4px;font-size:10px}.theme-toggle>span:first-child{font-size:16px}.menu-toggle{width:39px;height:39px}.brand{font-size:32px}.credit-theme{float:none}}

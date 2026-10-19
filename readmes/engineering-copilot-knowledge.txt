@@ -1,0 +1,19 @@
+# Engineering Standards
+
+## Purpose
+
+This document defines the preferred technical standards for projects reviewed or developed with Engineering Copilot. It provides reference criteria rather than instructions that override the agent's configured behavior.
+
+## Core Principles
+
+Engineering solutions should be:
+
+- Correct
+- Secure
+- Tested
+- Maintainable
+- Observable
+- Reliable
+- Appropriately optimized
+- Compatible with stated requirements
+- Reproducible where practical
