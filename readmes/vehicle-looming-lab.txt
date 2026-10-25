@@ -1,0 +1,72 @@
+# Approach · Vehicle Looming Lab
+
+**Can image expansion estimate how quickly a car is approaching?** Approach detects and tracks cars in real driving clips, fits inverse box height over time, and compares its estimate with an independent label-only depth reference. A browser explorer exposes every frame, rejected estimate, size history and matched reference.
+
+[Public interactive preview](https://ehsan-ch.github.io/vehicle-looming-lab/) · [Protocol and validation](VALIDATION.md) · [Sources and licenses](ATTRIBUTION.md)
+
+![Approach driving sequence explorer](reports/preview.jpg)
+
+## What was actually measured
+
+CPU inference on **120 contiguous frames**: frames 0–59 from KITTI training sequences **0001 and 0003**, selected before inference as the first two lexicographic sequences with at least 100 Car annotations in that window. The 594 annotated boxes represent **24 sequence-scoped car IDs**, not 594 vehicles. No training, fine-tuning, parameter search or poorly performing frame removal.
+
+| Stage | Precision | Recall | Matched / missed | Unmatched / ignored |
+|---|---:|---:|---:|---:|
+| Raw YOLOX-S car detections | 83.3% | 69.9% | 415 / 179 | 83 / 45 |
+| Confirmed Kalman tracks | 70.1% | 65.8% | 391 / 203 | 167 / 35 |
+
+Tracking does **not** improve detection accuracy on this sample. Coasting preserves hypotheses but also adds false positives. All confirmed tracks, including coasting, count in the tracking scores.
+
+| Closing-time estimator | Available / eligible | MAE on own available windows | MAE on 14 shared windows |
+|---|---:|---:|---:|
+| Ten-frame robust inverse-height fit | 14 / 22 (63.6%) | 0.114 s | 0.114 s |
+| Two-frame inverse-height difference | 20 / 22 (90.9%) | 0.526 s | 0.573 s |
+
+**The 14 shared windows come from only three labeled cars, all in sequence 0001.** These are overlapping, correlated windows selected by visibility and successful tracking. They are not an independent test set or evidence of generalization. Of 194 consistently matched histories, only 22 qualified as closing-depth references. On 54 qualified non-closing reference windows, the robust method returned a closing estimate 0 times and the baseline 3 times. No estimate means unknown, not safe.
+
+Median CPU detector time: **512 ms/frame**, p95 537 ms; tracker plus both estimators: **1.13 ms/frame**, excluding detection. Browser playback at nominal 10 frames/s replays stored predictions and is not live inference.
+
+## Run the project
+
+Python 3.11 or 3.12:
+
+```sh
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
+python -m pip install -r requirements-lock.txt
+python -m pip install --no-deps -e .
+python -m loom_lab.cli serve
+```
+
+Open **http://127.0.0.1:8787/**. Committed results and JPEGs are enough for playback; no weights or camera permissions are needed. Switch clips and estimators, play/pause, scrub, step frames, show labels, select tracks and export a frame with its estimates and reference. The initial frame is a fixed presentation offset of 20; all 60 frames in each clip remain accessible. The static HTML/CSS/JS also works on GitHub Pages with relative paths.
+
+To reproduce inference from original PNGs:
+
+```sh
+python scripts/setup.py
+python -m loom_lab.cli prepare --data data
+python -m loom_lab.cli evaluate --data data --output reports/custom
+python -m unittest discover -s tests -v
+```
+
+The setup script fetches revision-pinned YOLOX-S weights and verifies SHA-256. Preparation verifies the pinned label archive, freezes selection, then downloads only the selected PNGs through bounded ZIP byte-range requests. Evaluation rechecks image hashes and labels. Use new data/output directories when existing manifests/results are present. `reports/custom` is for independent reproduction; the explorer reads the committed `reports/results.json`.
+
+## Geometry and fixed settings
+
+For a rigid object's constant projected height H, focal length f and camera-axis distance z, image height is h = fH/z. Therefore q = 1/h is proportional to z. Fit q(t) = a + bt with the current time at zero; **τ = −a/b**, for b < 0, extrapolates when range reaches the camera plane under constant relative longitudinal speed. No focal length or assumed car size is needed for this ratio.
+
+- Detector: pretrained COCO YOLOX-S, best class must be car (class 2), confidence 0.35, NMS IoU 0.45. No training.
+- Tracker: original eight-state constant-velocity Kalman implementation reused from Crosswalk, global gated IoU assignment (gate 0.20), three observations to confirm, at most five missed frames retained. IDs are anonymous and sequence-local.
+- Estimator: raw observed detection heights associated to confirmed tracks; a median of pairwise slopes and median intercept over ten consecutive valid frames. The baseline uses the latest two frames. Neither uses labels, future frames or smoothed box heights.
+- Both reject gaps, image-edge clipping (within one pixel), height below 20 pixels and τ outside 0.5–30 s. The robust method also rejects median absolute inverse-height residual divided by fitted current inverse height above 3%. The baseline does not have a residual gate because two points always fit a line.
+- Reference: ten consecutive matches to the same GT car identity, every annotation visible (occlusion 0), truncation ≤0.1, positive camera-axis depth. Least-squares depth slope over the same ten frames; normalized median residual ≤3%, closing speed >0.5 m/s, τ within 0.5–30 s. Non-closing reference histories have slope ≥−0.5 m/s. Reference depth is consulted only after causal predictions are frozen.
+- Scoring: score-descending one-to-one IoU ≥0.5 against all Car labels; Van overlaps and DontCare regions may be ignored, but duplicate car matches remain false positives. These are custom sample metrics, not official KITTI HOTA/MOTA/AP.
+
+The report retains raw detections, track snapshots, raw observed boxes, estimate reasons, annotations, references, original-data hashes and execution environment. Tests replay the full tracking/looming pipeline from raw detections alone, then reconstruct reported scores.
+
+## Practical limits
+
+**This is a research experiment, not a collision warning or autonomous-driving controller.** τ refers to camera-axis extrapolation, not bumper clearance. The project does not estimate path overlap, lateral collision geometry, braking distance or collision probability. Occlusion, rotation, changing silhouettes, ego-motion and detector jitter can break the assumed relationship. The depth reference is also a local extrapolation, not ground-truth collision time. It does not process new videos in the browser or connect to a vehicle.
+
+Software is MIT except the Apache-2.0 detector adapter. KITTI-derived imagery, annotations and screenshots are CC BY-NC-SA 3.0; the demo is for academic/noncommercial use. See ATTRIBUTION. Development and testing were AI-assisted.
