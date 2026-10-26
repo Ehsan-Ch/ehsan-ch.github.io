@@ -2,10 +2,10 @@
 
 Live portfolio: https://ehsan-ch.github.io/
 
-32 public project summaries in English, Persian and Danish, with six featured projects and 13 original saved reports and six linked public project dashboards. Updated English CV downloads are available as PDF and Word. The collection includes interactive reports, browser-only demos and recorded simulations; each project states its limitations.
+32 public project summaries in English, Persian and Danish, with six featured projects and 13 original saved reports and six linked public project dashboards. The updated English CV is available as a PDF download. The collection includes interactive reports, browser-only demos and recorded simulations; each project states its limitations.
 
 ## Appearance
-The header appearance button switches between black and light backgrounds. The choice is remembered locally across project pages. Persian uses right-to-left layout. Original research reports keep their own presentation.
+Black is the default background. The header appearance button switches between black and light backgrounds. The choice is remembered locally across project pages. Persian uses right-to-left layout. Original research reports keep their own presentation.
 
 ## Hosting and updates
 GitHub Pages publishes the root of the `main` branch. `.nojekyll` serves the files directly. No paid service, API, build dependency or backend is required. Edit the static files and commit to main to update the site.

@@ -8,14 +8,14 @@ Object.assign(copy.en,{scroll:'Scroll to explore',openMenu:'Open navigation',clo
 Object.assign(copy.fa,{scroll:'برای کاوش پیمایش کنید',openMenu:'باز کردن فهرست',closeMenu:'بستن فهرست',case:'مشاهده پروژه ↗'});
 Object.assign(copy.da,{scroll:'Rul for at udforske',openMenu:'Åbn navigation',closeMenu:'Luk navigation',case:'Se projekt ↗'});
 
-Object.assign(copy.en,{cvPdf:'CV · PDF (English)',cvWord:'CV · Word (English)'});
-Object.assign(copy.fa,{cvPdf:'رزومه · PDF (انگلیسی)',cvWord:'رزومه · Word (انگلیسی)'});
-Object.assign(copy.da,{cvPdf:'CV · PDF (engelsk)',cvWord:'CV · Word (engelsk)'});
+Object.assign(copy.en,{cvPdf:'CV · PDF (English)'});
+Object.assign(copy.fa,{cvPdf:'رزومه · PDF (انگلیسی)'});
+Object.assign(copy.da,{cvPdf:'CV · PDF (engelsk)'});
 let params=new URLSearchParams(location.search),lang=params.get('lang');
 if(!['en','fa','da'].includes(lang)){try{lang=localStorage.getItem('portfolio-language')}catch{}if(!['en','fa','da'].includes(lang))lang='en'}
 let category='all';const t=key=>copy[lang][key]||copy.en[key];const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const href=p=>`?project=${encodeURIComponent(p.id)}&lang=${lang}`;
-function links(){let html=`<a href="${CONTACT.linkedin}" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://github.com/Ehsan-Ch" target="_blank" rel="noopener noreferrer">GitHub ↗</a>`;if(CONTACT.email)html+=`<a href="mailto:${esc(CONTACT.email)}">${t('email')} ↗</a>`;html+=`<a href="downloads/Ehsan_Cheraghi_CV.pdf" download>${t('cvPdf')} ↓</a><a href="downloads/Ehsan_Cheraghi_CV.docx" download>${t('cvWord')} ↓</a>`;$('contactLinks').innerHTML=html;}
+function links(){let html=`<a href="${CONTACT.linkedin}" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a><a href="https://github.com/Ehsan-Ch" target="_blank" rel="noopener noreferrer">GitHub ↗</a>`;if(CONTACT.email)html+=`<a href="mailto:${esc(CONTACT.email)}">${t('email')} ↗</a>`;html+=`<a href="downloads/Ehsan_Cheraghi_CV.pdf" download>${t('cvPdf')} ↓</a>`;$('contactLinks').innerHTML=html;}
 function renderList(){const q=$('search').value.toLocaleLowerCase().trim();const rows=PROJECTS.filter(p=>(category==='all'||p.category===category)&&[p.title,p.id,p.summary[lang],...p.tags,t(p.category)].join(' ').toLocaleLowerCase().includes(q));$('count').textContent=`${rows.length} / ${PROJECTS.length} ${t('found')}`;$('noResults').hidden=rows.length>0;$('projects').innerHTML=rows.map(p=>`<article class="project-row"><span class="row-number">${String(PROJECTS.indexOf(p)+1).padStart(2,'0')}</span><div><h3><a href="${href(p)}"><bdi>${esc(p.title)}</bdi></a></h3><p>${esc(p.summary[lang])}</p></div><span class="row-category">${t(p.category)}</span><a href="${href(p)}" aria-label="${esc(t('case')+' '+p.title)}">↗</a></article>`).join('');}
 let demoCleanup=null,detailEpoch=0;
 function detail(p){const epoch=++detailEpoch;demoCleanup?.();demoCleanup=null;const d=$('projectDetail');$('home').hidden=true;d.hidden=false;if(!p){d.innerHTML=`<a class="back" href="?lang=${lang}">${t('back')}</a><h1>${t('unknown')}</h1>`;return}document.title=p.title+' — Ehsan Cheraghi';
