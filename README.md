@@ -2,7 +2,7 @@
 
 Live portfolio: https://ehsan-ch.github.io/
 
-32 public project summaries in English, Persian and Danish, with six featured projects and 13 original saved reports and six linked public project dashboards. The updated English CV is available as a PDF download. The collection includes interactive reports, browser-only demos and recorded simulations; each project states its limitations.
+37 public project summaries in English, Persian and Danish, with six featured projects and 13 original saved reports and 11 linked public project dashboards. The updated English CV is available as a PDF download. The collection includes interactive reports, browser-only demos and recorded simulations; each project states its limitations.
 
 ## Appearance
 Black is the default background. The header appearance button switches between black and light backgrounds. The choice is remembered locally across project pages. Persian uses right-to-left layout. Original research reports keep their own presentation.

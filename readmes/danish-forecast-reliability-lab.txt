@@ -1,0 +1,105 @@
+# Beacon · Danish Forecast Reliability Lab
+
+**A forecast needs a watchful eye.** Beacon replays forecast monitoring for Danish electricity prices, with delayed outcomes, fixed rules, and a traceable incident lifecycle.
+
+[Open the interactive console](https://ehsan-ch.github.io/danish-forecast-reliability-lab/) · [Protocol](docs/PROTOCOL.md) · [Findings](docs/RESULTS.md) · [Data provenance](docs/DATA.md)
+
+![Beacon monitoring console](reports/preview.jpg)
+
+## What it adds
+
+Earlier projects studied price forecasts and procurement decisions. Beacon focuses on **what happens after a forecast is issued**:
+
+- Monitor weekly seasonal, ridge and quantile-boosting forecasts in DK1 and DK2.
+- Wait until each delivery day ends plus 24 elapsed hours before using its outcomes.
+- Track seven-day absolute error, interval coverage and signed bias.
+- Open an incident after three consecutive breaches; resolve after two clear checks.
+- Replay the incident register as it was known at each checkpoint, without exposing later resolutions.
+- Export the selected history, inspect model folds and data hashes, and explore a separate synthetic lifecycle drill.
+
+This is historical operations research. No live service, notification delivery, retraining, automatic model switching or market execution is included.
+
+## Findings
+
+Reference: **1–28 July 2026**. Monitoring: **1 August–30 September 2026**, 61 delivery days per series. Final outcomes become available at **00:00 Copenhagen on 2 October** under the study's delay.
+
+| Area | Model | Episodes opened | Resolved | Still active |
+|---|---|---:|---:|---:|
+| DK1 | Quantile boosting | 5 | 2 | 3 |
+| DK1 | Ridge | 7 | 4 | 3 |
+| DK1 | Weekly seasonal | 5 | 2 | 3 |
+| DK2 | Quantile boosting | 6 | 3 | 3 |
+| DK2 | Ridge | 8 | 5 | 3 |
+| DK2 | Weekly seasonal | 6 | 3 | 3 |
+
+There are **366 monitoring checkpoints**, **37 incident episodes** and **56 opening/resolution events**. Active includes both OPEN and RECOVERING states.
+
+For the original DK2-selected boosting model, the first coverage episode opens at **00:00 Copenhagen on 12 September**, after processing delivery 10 September. Its seven-day coverage at that checkpoint is about **61.3%**, below the illustrative 70% floor for three consecutive checks. The original interval target is 80%.
+
+Alerts describe persistent threshold breaches, not proven faults. We do not label historical alerts as true or false positives because there is no ground-truth incident dataset. No model is declared superior from its incident count.
+
+## Reproduce
+
+Python 3.11 or 3.12. From the repository root:
+
+~~~sh
+python -m venv .venv
+# Activate the environment, then:
+python -m pip install -e .
+python -m beacon.cli serve --port 8794
+~~~
+
+Open http://127.0.0.1:8794/. The public preview is static, with no API keys, external scripts or third-party fonts. Opening HTML directly as a file will not load the report.
+
+~~~sh
+python -m beacon.cli replay --output reports/custom/reproduction
+python -m unittest discover -s tests -v
+node --test tests/core.test.mjs
+~~~
+
+The included daily sufficient statistics reproduce all monitoring results offline. A nonempty output directory is rejected to preserve previous runs.
+
+To independently verify aggregation from the original pinned forecast archive:
+
+~~~sh
+python -m beacon.cli verify-source
+# Or use an existing archive without network:
+python -m beacon.cli verify-source --archive /path/to/predictions.csv.gz
+~~~
+
+This checks the upstream SHA-256, all original forecast timestamps and complete days, then reproduces the daily snapshot byte for byte. The compressed upstream file is not duplicated here.
+
+## Rules
+
+| Signal | Breach condition |
+|---|---|
+| Error level | Seven-day MAE / max(July reference MAE, 1 EUR/MWh) > 1.5 |
+| Interval coverage | Seven-day covered quarters / total quarters < 0.70 |
+| Signed bias | Absolute seven-day mean(forecast − actual) > 20 EUR/MWh |
+
+Equality to a limit is clear. All statistics weight native quarters, not equally weighted daily averages. The state machine starts clear on 1 August; late-July rows supply the initial rolling windows but do not start incident streaks.
+
+These thresholds are fixed illustrative engineering choices. They were not calibrated to a false-alarm rate or optimized using an incident ground truth. Overlapping windows are dependent: three breached checks are not three independent observations.
+
+## Structure and validation
+
+| Path | Purpose |
+|---|---|
+| `beacon/source.py` | Pinned archive verification, daily aggregation, calendar handling |
+| `beacon/monitor.py` | Availability-aware replay and incident state machine |
+| `beacon/pipeline.py` | Deterministic reports and overwrite protection |
+| `data/daily.csv` | 552 complete day/model/area records |
+| `data/provenance.json` | Source and derived hashes, original selections, licenses |
+| `reports/benchmark/` | Replay JSON, all checks, incident events |
+| `core.mjs` | Browser as-of snapshots, export and synthetic drill |
+| `app.mjs` | Interactive report, charts and timeline |
+
+**22 Python + 6 JavaScript tests** cover persistence, recovery, recurrence, timestamp boundaries, future-outcome mutation, missing days, DST, weighted metrics, hash guards, report reproduction, overwrite protection, as-of visibility and CSV output. CI repeats Python tests on 3.11/3.12 and uses Node 22.
+
+## Interpretation and limits
+
+The forecast archive comes from [Nordcast](https://github.com/Ehsan-Ch/danish-power-forecast-lab). The June-selected models remain ridge for DK1 and boosting for DK2. Forecasts refit monthly, so monitored windows may span model versions. July–September data was already examined in previous projects; this is not fresh prospective validation.
+
+The fixed July baseline is not demonstrated to be statistically stable. Absolute errors and coverage vary with market conditions, seasonality and model versions. Clear does not mean accurate, calibrated or safe. Resolution only means the rule cleared; unresolved episodes are right-censored at the study end. Calendar functions support clock changes, but the displayed monitoring period contains only ordinary 96-quarter days.
+
+Code: MIT. Energinet-derived numerical data/results: CC BY 4.0 with attribution. See [DATA.md](docs/DATA.md).

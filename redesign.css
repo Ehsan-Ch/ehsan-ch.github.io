@@ -8,3 +8,16 @@
 
 @media(max-width:680px){.card-number{right:4%}.project-card:nth-child(2n) .card-number{left:4%}.hero h1{font-size:10.4vw}.credit-page{padding-block:50px}}
 @media(max-width:680px){html:lang(da) .hero h1{font-size:9.5vw}}
+
+/* Keep labels, titles and circular links in separate layout cells at every width. */
+.project-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;width:86%;padding-top:0}
+.project-card:nth-child(2n){margin-inline-start:14%}
+.project-card .card-meta,.project-card:nth-child(2n) .card-meta,[dir=rtl] .project-card .card-meta{position:static;writing-mode:horizontal-tb;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px 20px;grid-column:1;grid-row:1}
+.project-card .card-number,.project-card:nth-child(2n) .card-number{position:static;grid-column:2;grid-row:1;writing-mode:horizontal-tb;font-size:28px;letter-spacing:-1px;z-index:auto;align-self:center}
+.project-card .card-image-link,.project-card:nth-child(2n) .card-image-link{grid-column:1/-1;grid-row:2;width:100%;margin:0}
+.card-body{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) 120px;column-gap:32px;row-gap:20px;align-items:start}
+.project-card .card-body h3,.project-card:nth-child(2n) .card-body h3{grid-column:1;grid-row:1;margin:0;max-width:100%;font-size:clamp(32px,5.2vw,80px);line-height:1.06;letter-spacing:-2px;min-width:0}
+.project-card .card-body .project-circle,.project-card:nth-child(2n) .card-body .project-circle{position:static;grid-column:2;grid-row:1/3;width:120px;height:120px;margin:0;padding:18px;align-self:start;justify-self:end}
+.project-card .card-body .card-description,.project-card:nth-child(2n) .card-body .card-description{grid-column:1;grid-row:2;max-width:100%;margin:0;padding:0;min-width:0}
+@media(max-width:1000px){.project-card{width:94%}.project-card:nth-child(2n){margin-inline-start:6%}.card-body{grid-template-columns:minmax(0,1fr) 100px;column-gap:24px}.project-card .card-body .project-circle,.project-card:nth-child(2n) .card-body .project-circle{width:100px;height:100px;padding:12px}}
+@media(max-width:680px){.project-card{width:100%;gap:16px}.project-card:nth-child(2n){margin-inline-start:0}.card-body{grid-template-columns:minmax(0,1fr) 74px;column-gap:16px;row-gap:16px}.project-card .card-body h3,.project-card:nth-child(2n) .card-body h3{font-size:clamp(27px,7vw,46px);letter-spacing:-1px}.project-card .card-body .project-circle,.project-card:nth-child(2n) .card-body .project-circle{grid-row:1;width:74px;height:74px;padding:8px}.project-card .card-body .card-description,.project-card:nth-child(2n) .card-body .card-description{grid-column:1/-1}.project-circle:hover{transform:rotate(6deg)}[dir=rtl] .project-circle span{font-size:11px}}
