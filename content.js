@@ -1,5 +1,34 @@
 const PROJECTS=[
   {
+    "id": "market-model-sentinel",
+    "title": "Sentinel",
+    "category": "data",
+    "tags": [
+      "JavaScript",
+      "ML monitoring",
+      "Incident replay"
+    ],
+    "featured": false,
+    "summary": {
+      "en": "Replay financial model monitoring with delayed labels, data-quality checks, failure drills and traceable incident lifecycles.",
+      "fa": "پایش مدل مالی را با برچسب‌های تأخیری، بررسی کیفیت داده، سناریوهای خطا و چرخه رخداد قابل پیگیری بازپخش کنید.",
+      "da": "Genafspil overvågning af finansielle modeller med forsinkede labels, datakvalitetstjek, fejlscenarier og sporbare hændelsesforløb."
+    },
+    "finding": {
+      "en": "The replay covers 480 forecasts across four historical test days. Eleven tests validate delayed-label scoring, three controlled drills and deterministic incident transitions.",
+      "fa": "بازپخش شامل ۴۸۰ پیش‌بینی در چهار روز آزمون تاریخی است. یازده آزمون، امتیازدهی با برچسب تأخیری، سه سناریوی کنترل‌شده و تغییر وضعیت قطعی رخدادها را بررسی می‌کند.",
+      "da": "Afspilningen dækker 480 prognoser på fire historiske testdage. Elleve tests validerer scoring med forsinkede labels, tre kontrollerede scenarier og deterministiske hændelsesforløb."
+    },
+    "limit": {
+      "en": "A small historical crypto proxy with simulated faults, not live monitoring or evidence of production effectiveness. Thresholds are illustrative; no alerts or trades are sent.",
+      "fa": "نمونه تاریخی کوچک رمزارز با خطاهای شبیه‌سازی‌شده است؛ نه پایش زنده یا مدرک اثربخشی تولید. آستانه‌ها نمونه‌ای هستند و هیچ هشدار یا معامله‌ای ارسال نمی‌شود.",
+      "da": "En lille historisk kryptoproxy med simulerede fejl, ikke liveovervågning eller dokumentation for produktionseffekt. Grænserne er illustrative; ingen alarmer eller handler sendes."
+    },
+    "mode": "browser",
+    "preview": "https://ehsan-ch.github.io/market-model-sentinel/",
+    "image": "https://raw.githubusercontent.com/Ehsan-Ch/market-model-sentinel/main/preview.jpg"
+  },
+  {
     "id": "tick-calibration-lab",
     "title": "TickLab",
     "category": "data",
