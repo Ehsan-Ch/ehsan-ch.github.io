@@ -1087,5 +1087,316 @@ const PROJECTS=[
     "featured": false,
     "mode": "docs"
   }
+  {
+    "id": "market-risk-atlas",
+    "title": "Market Risk Atlas",
+    "category": "data",
+    "tags": [
+      "Python",
+      "Value at Risk",
+      "ETHUSDT"
+    ],
+    "featured": false,
+    "summary": {
+      "en": "Compare rolling historical and adaptive downside-risk estimates on historical ETHUSDT trades.",
+      "fa": "برآوردهای ریسک نزولی تاریخی و تطبیقی را با استفاده از معاملات تاریخی ETHUSDT مقایسه کنید.",
+      "da": "Sammenlign historiske og adaptive estimater af nedsiderisiko på historiske ETHUSDT-handler."
+    },
+    "finding": {
+      "en": "Across 3,167 forecasts, EWMA had lower quantile loss at both 95% and 99%; its 99% exceedance rate was 1.55% against a 1% target.",
+      "fa": "در ۳٬۱۶۷ پیش‌بینی، EWMA در سطح ۹۵٪ و ۹۹٪ زیان کوانتایلی کمتری داشت؛ نرخ عبور از آستانه ۹۹٪ آن ۱٫۵۵٪ در برابر هدف ۱٪ بود.",
+      "da": "På tværs af 3.167 prognoser havde EWMA lavere kvantiltab ved både 95 % og 99 %; overskridelsesraten ved 99 % var 1,55 % mod et mål på 1 %."
+    },
+    "limit": {
+      "en": "Descriptive two-week, single-asset study, not evidence of future reliability or trading performance. Code is MIT; data-backed research artifacts are CC BY-NC-SA.",
+      "fa": "مطالعه توصیفی دوهفته‌ای روی یک دارایی است و قابلیت اتکای آینده یا سودآوری معامله را اثبات نمی‌کند. مجوز کد MIT و مجوز خروجی‌های پژوهشی CC BY-NC-SA است.",
+      "da": "Beskrivende studie over to uger for ét aktiv; dokumenterer ikke fremtidig pålidelighed eller handelsafkast. Koden er MIT-licenseret; dataresultater er CC BY-NC-SA."
+    },
+    "mode": "browser",
+    "preview": "https://ehsan-ch.github.io/market-risk-atlas/",
+    "image": "https://raw.githubusercontent.com/Ehsan-Ch/market-risk-atlas/main/preview.jpg"
+  },
+  {
+    "id": "harborscope-ais-lab",
+    "title": "HarborScope",
+    "category": "data",
+    "tags": [
+      "Python",
+      "AIS",
+      "Coverage analysis"
+    ],
+    "featured": false,
+    "summary": {
+      "en": "Screen AIS observations near Los Angeles and Long Beach and reconstruct observed low-speed dwell episodes with explicit coverage limits.",
+      "fa": "داده‌های AIS نزدیک لس‌آنجلس و لانگ‌بیچ را بررسی و دوره‌های مشاهده‌شده حرکت کم‌سرعت را با محدودیت پوشش روشن بازسازی می‌کند.",
+      "da": "Gennemgå AIS-observationer ved Los Angeles og Long Beach, og rekonstruér observerede lavhastighedsperioder med tydelige dækningsgrænser."
+    },
+    "finding": {
+      "en": "From 7.29 million national reports, the one-day sample retained 12,506 cargo/tanker observations and identified 38 observed dwell episodes across 32 vessels.",
+      "fa": "از ۷٫۲۹ میلیون گزارش سراسری، نمونه یک‌روزه ۱۲٬۵۰۶ مشاهده کشتی باری/تانکری را نگه داشت و ۳۸ دوره توقف مشاهده‌شده را در ۳۲ کشتی یافت.",
+      "da": "Ud af 7,29 mio. landsdækkende rapporter beholdt én dags stikprøve 12.506 observationer af fragt-/tankskibe og fandt 38 observerede ophold på 32 skibe."
+    },
+    "limit": {
+      "en": "One holiday and study rectangle. These are observed low-speed episodes, not verified port calls, berth occupancy or waiting time; many touch sample boundaries.",
+      "fa": "محدود به یک روز تعطیل و محدوده مطالعه است. این‌ها دوره‌های مشاهده‌شده حرکت کم‌سرعت‌اند، نه ورود قطعی به بندر، اشغال اسکله یا زمان انتظار؛ بسیاری به مرز نمونه می‌رسند.",
+      "da": "Én helligdag og ét studieområde. Perioderne er observeret lav fart, ikke verificerede havneanløb, kajbelægning eller ventetid; mange når stikprøvens grænser."
+    },
+    "mode": "browser",
+    "preview": "https://ehsan-ch.github.io/harborscope-ais-lab/",
+    "image": "https://raw.githubusercontent.com/Ehsan-Ch/harborscope-ais-lab/main/preview.jpg"
+  },
+  {
+    "id": "wakecast-trajectory-lab",
+    "title": "WakeCast",
+    "category": "data",
+    "tags": [
+      "Python",
+      "AIS",
+      "Trajectory forecasting"
+    ],
+    "featured": false,
+    "summary": {
+      "en": "Compare transparent short-horizon vessel-displacement forecasts and test how empirical error radii transfer to a later time window.",
+      "fa": "پیش‌بینی‌های شفاف جابه‌جایی کوتاه‌مدت کشتی را مقایسه و انتقال شعاع خطای تجربی به بازه زمانی بعدی را ارزیابی می‌کند.",
+      "da": "Sammenlign gennemsigtige korttidsprognoser for skibsbevægelser, og undersøg overførsel af empiriske fejlradier til et senere tidsvindue."
+    },
+    "finding": {
+      "en": "On 30 held-out cases, constant velocity had a 587 m median endpoint error, compared with 1,833 m for holding position.",
+      "fa": "در ۳۰ نمونه آزمون کنارگذاشته‌شده، میانه خطای نقطه پایانی سرعت ثابت ۵۸۷ متر بود؛ در برابر ۱٬۸۳۳ متر برای ثابت نگه‌داشتن موقعیت.",
+      "da": "På 30 holdte testsager var medianfejlen for konstant hastighed 587 m mod 1.833 m for at holde positionen."
+    },
+    "limit": {
+      "en": "Small, dependent sample from one day and one area; missing future observations are excluded. Not a navigation or collision-avoidance system.",
+      "fa": "نمونه کوچک و وابسته از یک روز و یک منطقه است؛ مشاهدات آینده مفقود حذف شده‌اند. سامانه ناوبری یا اجتناب از برخورد نیست.",
+      "da": "Lille, afhængig stikprøve fra én dag og ét område; manglende fremtidige observationer udelades. Ikke et navigations- eller kollisionssystem."
+    },
+    "mode": "browser",
+    "preview": "https://ehsan-ch.github.io/wakecast-trajectory-lab/",
+    "image": "https://raw.githubusercontent.com/Ehsan-Ch/wakecast-trajectory-lab/main/preview.jpg"
+  },
+  {
+    "id": "ais-gap-reconstruction-lab",
+    "title": "AIS Gap Lab",
+    "category": "data",
+    "tags": [
+      "AIS",
+      "Interpolation",
+      "Track analysis"
+    ],
+    "featured": false,
+    "summary": {
+      "en": "Compare hold-position, linear and cubic Hermite methods for reconstructing missing positions in historical vessel tracks.",
+      "fa": "روش‌های نگه‌داشتن موقعیت، درون‌یابی خطی و هرمایت مکعبی را برای بازسازی نقاط گمشده مسیر کشتی مقایسه می‌کند.",
+      "da": "Sammenlign fast position, lineær interpolation og kubisk Hermite til rekonstruktion af manglende positioner i historiske skibsspor."
+    },
+    "finding": {
+      "en": "The explorer evaluates pointwise reconstruction errors for 5-, 10- and 20-minute gaps and lets you inspect individual tracks and cohorts.",
+      "fa": "کاوشگر خطای بازسازی هر نقطه را برای شکاف‌های ۵، ۱۰ و ۲۰ دقیقه‌ای می‌سنجد و امکان بررسی مسیرها و گروه‌های نمونه را می‌دهد.",
+      "da": "Udforskeren måler punktvise rekonstruktionsfejl for huller på 5, 10 og 20 minutter og viser individuelle spor og grupper."
+    },
+    "limit": {
+      "en": "Retrospective interpolation uses both gap endpoints. Results cover selected, relatively well-observed tracks from one day near Los Angeles/Long Beach, not all real AIS outages.",
+      "fa": "درون‌یابی گذشته‌نگر از هر دو انتهای شکاف استفاده می‌کند. نتایج به مسیرهای منتخب با پوشش نسبتاً خوب طی یک روز نزدیک لس‌آنجلس/لانگ‌بیچ محدود است.",
+      "da": "Retrospektiv interpolation bruger begge ender af hullet. Resultaterne dækker udvalgte, relativt velobserverede spor fra én dag ved Los Angeles/Long Beach, ikke alle AIS-udfald."
+    },
+    "mode": "browser",
+    "preview": "https://ehsan-ch.github.io/ais-gap-reconstruction-lab/"
+  },
+  {
+    "id": "berthflow-scheduling-lab",
+    "title": "BerthFlow",
+    "category": "data",
+    "tags": [
+      "Simulation",
+      "Scheduling",
+      "Port operations"
+    ],
+    "featured": false,
+    "summary": {
+      "en": "A synthetic port simulator comparing vessel-queue scheduling policies and their effect on waiting times.",
+      "fa": "شبیه‌ساز مصنوعی بندر برای مقایسه سیاست‌های زمان‌بندی صف کشتی‌ها و اثر آن‌ها بر زمان انتظار.",
+      "da": "En syntetisk havnesimulator, der sammenligner planlægningspolitikker for skibskøer og deres effekt på ventetid."
+    },
+    "finding": {
+      "en": "In clustered-delay scenarios, shortest estimated service cut mean wait from 4.99 to 3.98 hours, but longer waits increased in a busy scenario.",
+      "fa": "در سناریوهای تأخیر خوشه‌ای، کوتاه‌ترین زمان خدمت تخمینی میانگین انتظار را از ۴٫۹۹ به ۳٫۹۸ ساعت کاهش داد؛ اما در سناریوی پرترافیک انتظارهای طولانی بیشتر شد.",
+      "da": "I scenarier med klyngede forsinkelser sænkede korteste estimerede service gennemsnitlig ventetid fra 4,99 til 3,98 timer; lange ventetider steg dog i et travlt scenarie."
+    },
+    "limit": {
+      "en": "Forty seeded runs per scenario with synthetic arrivals and service times; results do not estimate performance at a named port.",
+      "fa": "چهل اجرای دارای بذر ثابت برای هر سناریو با ورود و زمان خدمت مصنوعی؛ نتایج عملکرد هیچ بندر مشخصی را برآورد نمی‌کند.",
+      "da": "40 seedede kørsler pr. scenarie med syntetiske ankomster og servicetider; resultaterne estimerer ikke en bestemt havns drift."
+    },
+    "mode": "browser",
+    "preview": "https://ehsan-ch.github.io/berthflow-scheduling-lab/"
+  },
+  {
+    "id": "slowwake-voyage-lab",
+    "title": "SlowWake",
+    "category": "data",
+    "tags": [
+      "Dynamic programming",
+      "Fuel model",
+      "Voyage planning"
+    ],
+    "featured": false,
+    "summary": {
+      "en": "Compare constant-speed sailing with a deadline-constrained, variable-speed plan across a synthetic multi-leg voyage.",
+      "fa": "حرکت با سرعت ثابت را با برنامه سرعت متغیرِ مقید به مهلت رسیدن در سفر مصنوعی چندمرحله‌ای مقایسه می‌کند.",
+      "da": "Sammenlign sejlads med konstant hastighed og en deadline-begrænset plan med variabel hastighed på en syntetisk rute med flere ben."
+    },
+    "finding": {
+      "en": "For one mixed-current 20-hour scenario, the variable-speed plan used 14.25 tonnes of modeled fuel versus 15.93 tonnes for constant speed.",
+      "fa": "در یک سناریوی ۲۰ ساعته با جریان‌های متغیر، برنامه سرعت متغیر ۱۴٫۲۵ تن سوخت مدل‌شده مصرف کرد، در برابر ۱۵٫۹۳ تن با سرعت ثابت.",
+      "da": "I ét 20-timers scenarie med blandet strøm brugte planen med variabel hastighed 14,25 ton modelleret brændstof mod 15,93 ton ved konstant hastighed."
+    },
+    "limit": {
+      "en": "Synthetic six-leg voyage with illustrative deterministic current and fuel assumptions; not an operational fuel-saving guarantee.",
+      "fa": "سفر مصنوعی شش‌مرحله‌ای با فرض‌های نمونه‌ای و قطعی درباره جریان و سوخت؛ تضمینی برای صرفه‌جویی عملیاتی نیست.",
+      "da": "Syntetisk sejlads med seks ben og illustrative, deterministiske antagelser om strøm og brændstof; ingen garanti for operationel besparelse."
+    },
+    "mode": "browser",
+    "preview": "https://ehsan-ch.github.io/slowwake-voyage-lab/"
+  },
+  {
+    "id": "connection-window-lab",
+    "title": "Connection Window",
+    "category": "data",
+    "tags": [
+      "Simulation",
+      "Transshipment",
+      "Schedule recovery"
+    ],
+    "featured": false,
+    "summary": {
+      "en": "Replay synthetic transshipment schedules to compare on-time sailing with capped holds for late inbound cargo.",
+      "fa": "برنامه‌های مصنوعی انتقال بار را بازپخش و حرکت به‌موقع را با توقف محدود برای بار ورودی دیررس مقایسه می‌کند.",
+      "da": "Genafspil syntetiske omladningsplaner, og sammenlign afsejling til tiden med begrænset ventetid på forsinket indgående last."
+    },
+    "finding": {
+      "en": "In the late-arrival scenario, a 30-minute hold recovered 73.8 TEU on average while adding 28.2 minutes of mean departure delay.",
+      "fa": "در سناریوی ورود دیرهنگام، توقف ۳۰ دقیقه‌ای به‌طور متوسط ۷۳٫۸ TEU بار را بازیابی کرد و ۲۸٫۲ دقیقه به میانگین تأخیر حرکت افزود.",
+      "da": "I scenariet med sen ankomst genvandt et ophold på 30 minutter gennemsnitligt 73,8 TEU og tilføjede 28,2 minutters gennemsnitlig afgangsforsinkelse."
+    },
+    "limit": {
+      "en": "Synthetic manifests and handling times; cargo readiness is only a proxy for making a connection. Terminal capacity and network effects are outside scope.",
+      "fa": "بارنامه‌ها و زمان‌های جابه‌جایی مصنوعی‌اند؛ آمادگی بار فقط نماینده امکان اتصال است. ظرفیت پایانه و اثرات شبکه خارج از دامنه‌اند.",
+      "da": "Syntetiske manifest og håndteringstider; lastklarhed er kun en stedfortræder for forbindelse. Terminalkapacitet og netværkseffekter er uden for scope."
+    },
+    "mode": "browser",
+    "preview": "https://ehsan-ch.github.io/connection-window-lab/"
+  },
+  {
+    "id": "empty-container-repositioning-lab",
+    "title": "Empty Container Repositioning",
+    "category": "data",
+    "tags": [
+      "Simulation",
+      "Inventory",
+      "Repositioning"
+    ],
+    "featured": false,
+    "summary": {
+      "en": "A three-port synthetic inventory simulator comparing fixed stock floors, demand forecasts and no-repositioning policies.",
+      "fa": "شبیه‌ساز مصنوعی موجودی سه‌بندری برای مقایسه حد ثابت موجودی، پیش‌بینی تقاضا و سیاست بدون جابه‌جایی.",
+      "da": "En syntetisk lagerbeholdningssimulator for tre havne, der sammenligner faste lagerniveauer, efterspørgselsprognoser og ingen omplacering."
+    },
+    "finding": {
+      "en": "In the persistent-imbalance scenario, forecast-led repositioning filled 97.3% of bookings versus 79.7% for a fixed floor, with more empty moves.",
+      "fa": "در سناریوی عدم‌تعادل پایدار، جابه‌جایی مبتنی بر پیش‌بینی ۹۷٫۳٪ سفارش‌ها را تأمین کرد، در برابر ۷۹٫۷٪ با حد ثابت؛ با جابه‌جایی کانتینر خالی بیشتر.",
+      "da": "I scenariet med vedvarende ubalance dækkede prognosebaseret omplacering 97,3 % af bookingerne mod 79,7 % ved fast minimum, men krævede flere tomme flytninger."
+    },
+    "limit": {
+      "en": "Synthetic demand over three ports and 18 weeks; the model excludes real terminal, carrier, cost and emissions data.",
+      "fa": "تقاضای مصنوعی در سه بندر و ۱۸ هفته؛ مدل داده واقعی پایانه، شرکت کشتیرانی، هزینه یا انتشار را شامل نمی‌شود.",
+      "da": "Syntetisk efterspørgsel i tre havne over 18 uger; modellen udelader reelle terminal-, rederi-, omkostnings- og emissionsdata."
+    },
+    "mode": "browser",
+    "preview": "https://ehsan-ch.github.io/empty-container-repositioning-lab/"
+  },
+  {
+    "id": "eta-reliability-lab",
+    "title": "ETA Reliability Lab",
+    "category": "data",
+    "tags": [
+      "Forecast intervals",
+      "Calibration",
+      "Stress testing"
+    ],
+    "featured": false,
+    "summary": {
+      "en": "Compare pooled and distance-specific calibration for synthetic vessel-arrival prediction intervals.",
+      "fa": "کالیبراسیون تجمیعی و مبتنی بر مسافت را برای بازه‌های پیش‌بینی زمان رسیدن کشتی مصنوعی مقایسه می‌کند.",
+      "da": "Sammenlign samlet og afstandsspecifik kalibrering af prædiktionsintervaller for syntetiske skibsankomster."
+    },
+    "finding": {
+      "en": "At a 90% target, distance-group intervals covered 91.7% of reference voyages at 5.95 hours mean width; under the disruption, coverage fell to 38.5%.",
+      "fa": "در هدف ۹۰٪، بازه‌های گروه‌بندی‌شده بر اساس مسافت ۹۱٫۷٪ سفرهای مرجع را با پهنای میانگین ۵٫۹۵ ساعت پوشش دادند؛ در اختلال، پوشش به ۳۸٫۵٪ افت کرد.",
+      "da": "Ved et mål på 90 % dækkede afstandsgrupperede intervaller 91,7 % af referencevoyagerne med en gennemsnitlig bredde på 5,95 timer; under forstyrrelsen faldt dækningen til 38,5 %."
+    },
+    "limit": {
+      "en": "Synthetic voyages and deliberately shifted stress conditions; calibration coverage under exchangeability does not guarantee coverage after a distribution shift.",
+      "fa": "سفرهای مصنوعی و شرایط تنش با تغییر عمدی؛ پوشش کالیبراسیون در فرض تبادل‌پذیری، پس از تغییر توزیع تضمین نمی‌شود.",
+      "da": "Syntetiske rejser og bevidst ændrede stressforhold; kalibreringsdækning ved udskiftelighed garanterer ikke dækning efter distributionsskift."
+    },
+    "mode": "browser",
+    "preview": "https://ehsan-ch.github.io/eta-reliability-lab/"
+  },
+  {
+    "id": "TechExplainedStudio-Public",
+    "title": "TechExplained Studio",
+    "category": "tools",
+    "tags": [
+      "React",
+      "TypeScript",
+      "Remotion",
+      "Qwen3-TTS"
+    ],
+    "featured": false,
+    "summary": {
+      "en": "Public code companion for an educational video project, with a Remotion composition workflow and a Colab text-to-speech notebook.",
+      "fa": "مخزن کد عمومی همراه یک پروژه ویدیویی آموزشی، با گردش‌کار ساخت ویدیو در Remotion و دفترچه تبدیل متن به گفتار در Colab.",
+      "da": "Offentligt kodetilbehør til et undervisningsvideoprojekt med Remotion-komposition og en Colab-notesbog til tekst-til-tale."
+    },
+    "finding": {
+      "en": "Combines a React/TypeScript video composition and a separate notebook-based speech workflow; the public repository contains source code only.",
+      "fa": "ترکیبی از ساختار ویدیویی React/TypeScript و گردش‌کار گفتار در دفترچه‌ای جداگانه؛ مخزن عمومی فقط شامل کد منبع است.",
+      "da": "Kombinerer en React/TypeScript-videokomposition med en separat notebookbaseret taleproces; det offentlige arkiv indeholder kun kildekode."
+    },
+    "limit": {
+      "en": "No rendered video, voice references, recordings, model weights or other media are included; no live preview is published.",
+      "fa": "ویدیوی خروجی، نمونه صدای مرجع، ضبط‌ها، وزن‌های مدل یا رسانه دیگری در آن نیست؛ پیش‌نمایش زنده‌ای منتشر نشده است.",
+      "da": "Ingen gengivet video, stemmereferencer, optagelser, modelvægte eller andre medier er inkluderet; ingen livevisning er offentliggjort."
+    },
+    "mode": "docs"
+  },
+  {
+    "id": "ais-density-bias-lab",
+    "title": "AIS Density Bias Lab",
+    "category": "data",
+    "tags": [
+      "AIS",
+      "Sampling bias",
+      "Spatial analysis"
+    ],
+    "featured": false,
+    "summary": {
+      "en": "Examine how AIS report cadence and a maximum-gap rule change estimated vessel time across a spatial grid.",
+      "fa": "بررسی می‌کند که تناوب گزارش AIS و محدودیت حداکثر شکاف چگونه زمان تخمینی حضور کشتی را در شبکه مکانی تغییر می‌دهد.",
+      "da": "Undersøg, hvordan AIS-rapportfrekvens og en maksimal gapgrænse ændrer estimeret skibstid i et geografisk gitter."
+    },
+    "finding": {
+      "en": "For 36 vessels, the five-minute-gap maps differed by 4.1% total variation; tightening the cap to two minutes reduced estimated time from 571.5 to 22.7 vessel-hours.",
+      "fa": "برای ۳۶ کشتی، نقشه‌های دارای شکاف پنج‌دقیقه‌ای ۴٫۱٪ اختلاف کل داشتند؛ محدودکردن شکاف به دو دقیقه زمان تخمینی را از ۵۷۱٫۵ به ۲۲٫۷ ساعت-کشتی کاهش داد.",
+      "da": "For 36 skibe afveg kortene med femminuttersgrænse 4,1 % i total variation; en grænse på to minutter reducerede estimeret tid fra 571,5 til 22,7 skibstimer."
+    },
+    "limit": {
+      "en": "One historical day and one study rectangle. Time between reports is an estimator, not ground truth for vessel presence; AIS coverage and reception are uneven.",
+      "fa": "محدود به یک روز تاریخی و یک محدوده مطالعه است. زمان بین گزارش‌ها تخمین است، نه حقیقت مبنا برای حضور کشتی؛ پوشش و دریافت AIS یکنواخت نیست.",
+      "da": "Én historisk dag og ét studieområde. Tid mellem rapporter er et estimat, ikke facit for skibstilstedeværelse; AIS-dækning og modtagelse er ujævn."
+    },
+    "mode": "browser",
+    "preview": "https://ehsan-ch.github.io/ais-density-bias-lab/"
+  }
 ];
 const CONTACT={"linkedin": "https://www.linkedin.com/in/ehsan-cheraghi-a513ba263/", "email": null};

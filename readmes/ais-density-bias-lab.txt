@@ -1,0 +1,21 @@
+# AIS Density Bias Lab
+
+Compare AIS reporting density to time estimated between vessel observations in the Los Angeles / Long Beach study rectangle. Filter cargo or tanker, change the maximum gap, inspect any cell, and export the complete grid.
+
+[Open the live explorer](https://ehsan-ch.github.io/ais-density-bias-lab/)
+
+For all 36 vessels and a five-minute gap cap, the two maps differ by **4.1% in total variation** and share the same top cell. At a two-minute cap, the estimated vessel time contracts from **571.5 hours to 22.7 hours**, and the map difference rises to **55.8%**. The cap changes which intervals are represented. These results apply to one day of historical data.
+
+## Reproduce
+
+With Python 3.12, run `python build.py` and `python -m unittest -v`. Open the generated `index.html` directly. No third-party dependencies.
+
+The grid divides the rectangle (33.65°–33.85° N, 118.30°–118.13° W) into 10 rows by 10 columns. Cells are equal in angular units, not exactly equal in surface area. Row numbers increase northward and column numbers increase eastward. Internal boundary points go to the north/east containing cell. The outer north/east boundaries are included in the grid. Ties for top cells select the smallest grid index.
+
+Every distinct supplied report contributes one count. Consecutive eligible reports for the same vessel contribute their elapsed time up to the cap, inclusive. For cargo/tanker filters, both ends must match and the observations must remain adjacent in the original track. The model assumes constant motion along a straight line in latitude/longitude, allocates time using exact fractional crossings, and puts stationary intervals in their containing cell. No interpolation occurs across excluded gaps. Total variation is half the sum of absolute cell-share differences. The two shares have different denominators. The cap sensitivity measures a change in estimators, and it cannot establish which map represents true vessel presence.
+
+## Data and scope
+
+12,506 retained observations from 36 cargo/tanker aliases on 1 January 2024 UTC, using the [pinned HarborScope extract](https://github.com/Ehsan-Ch/harborscope-ais-lab/blob/d8e1dcee1e8433e4153e24c00a3e49dc803b0e76/points.csv). The build checks its SHA256. HarborScope records the nationwide source and extraction rules. Data credit goes to the U.S. Coast Guard Navigation Center, BOEM and NOAA Office for Coastal Management. See the [official archive metadata](https://www.fisheries.noaa.gov/inport/item/73064) for scope, distribution liability and receiver-dependent coverage. The code's MIT license does not relicense the source data.
+
+Estimated vessel-hours sum across ships and can exceed one day. Data gaps, uneven reception, linear path approximation, the study boundary, and the single holiday sample all limit interpretation. The maps do not validate berth occupancy or traffic volume.

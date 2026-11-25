@@ -1,0 +1,14 @@
+﻿# TechExplainedStudio â€” Public Code
+
+Code-only public companion repository for the TechExplainedStudio educational video project.
+
+- React, TypeScript, Remotion composition, and GitHub Actions rendering workflow.
+- Google Colab Qwen3-TTS Notebook.
+- **No voice reference files, sound recordings, model weights, video assets, secrets, or previous Git history.**
+
+The voice notebook uses a restricted GitHub token from Google Colab Secrets, named
+`TECHSTUDIO_GITHUB_TOKEN`, to read private references from `Ehsan-Ch/TechExplainedStudio`.
+Never enter a token in a code cell or commit it to this repository.
+
+The private source repository must remain **Private**. The public repo should be
+created as a **new empty repository** with no README, license or .gitignore preset.

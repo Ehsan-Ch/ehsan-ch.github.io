@@ -1,0 +1,23 @@
+# AIS Gap Lab
+
+AIS Gap Lab compares methods for reconstructing missing positions in historical vessel tracks near Los Angeles and Long Beach. The interactive report compares hold position, linear interpolation, and cubic Hermite interpolation. Choose a gap duration and vessel type, inspect a track, and export its cohort's pointwise errors.
+
+[Live explorer](https://ehsan-ch.github.io/ais-gap-reconstruction-lab/)
+
+## Reproduce the benchmark
+
+Run `python benchmark.py` with Python 3.12. It checks the bundled AIS extract and generates the self-contained `index.html` and the machine-readable `report.json`. Open `index.html` directly in a browser. Run `python -m unittest -v` to check reconstruction and report consistency. No external packages are required.
+
+## Protocol
+
+Use three target durations of 5, 10 and 20 minutes. Start at a report with reported speed of at least 2 knots. Choose the timestamp closest to the desired end within 90 seconds among reports with at least one interior position and one subsequent report. Break ties by taking the earlier timestamp. Require the two exterior neighbours and all intervening report gaps to be between 30 and 180 seconds. Take the first eligible window and move past its right endpoint before selecting the next. Selected intervals are disjoint within each vessel and duration. Exterior neighbours can be reused and cohorts can overlap across durations.
+
+Hide the interior positions. Estimate at their original timestamps, with hold position using the left endpoint and linear interpolation using both endpoints. Cubic Hermite also uses time-normalized finite differences on the adjacent exterior legs to estimate endpoint tangents. The cubic curve is unconstrained and can overshoot. Both interpolation methods use the right endpoint, so this is retrospective reconstruction.
+
+Measure Euclidean error in a local equirectangular projection centred at 33.75° N, 118.215° W. Report the pooled median and nearest-rank 90th percentile alongside the mean of per-window means. Metrics use errors rounded to the nearest millimetre before aggregation. Observations within windows are dependent. The benchmark describes masked reports in relatively well observed tracks from one area and one day. Real gaps, including those caused by receiver coverage, may have different error characteristics. Differences across gap durations also reflect changes in which tracks qualify.
+
+## Data
+
+The bundled extract contains 12,506 reports for 36 cargo and tanker vessels on 1 January 2024 UTC. It is the [pinned HarborScope extract](https://github.com/Ehsan-Ch/harborscope-ais-lab/blob/d8e1dcee1e8433e4153e24c00a3e49dc803b0e76/points.csv), SHA256 `f36a975111b3e1fcbebd2ef6012ec635b9f44ddcf296b5b24590d4b429ac0484`. HarborScope documents the original archive and selection rules. Vessel aliases replace ship identifiers. Historical tracks can still be linked to public observations.
+
+Original data credit goes to the U.S. Coast Guard Navigation Center, Bureau of Ocean Energy Management and NOAA Office for Coastal Management. See the [NOAA metadata](https://www.fisheries.noaa.gov/inport/item/73064) for coastal and ocean planning scope and source conditions. The MIT license applies to project code.
